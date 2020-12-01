@@ -35,13 +35,13 @@ class RefreshHeaderView: RefreshView {
     /// 初始化headerView
     /// - Parameters:
     ///   - refresh: 刷新回调
-    ///   - scrollerView: scrollerView
+    ///   - scrollView: scrollView
     /// - Returns: headerView
-    class func headerView(refresh: @escaping () -> Void, scrollerView: UIScrollView) -> RefreshHeaderView {
+    class func headerView(refresh: @escaping () -> Void, scrollView: UIScrollView) -> RefreshHeaderView {
         let headerH: CGFloat = 50
         
-        let headerView = RefreshHeaderView.init(frame: .init(x: 0, y: -headerH, width: scrollerView.frame.size.width, height: headerH))
-        headerView.scrollerView = scrollerView
+        let headerView = RefreshHeaderView.init(frame: .init(x: 0, y: -headerH, width: scrollView.frame.size.width, height: headerH))
+        headerView.scrollView = scrollView
         headerView.refresh = refresh
         
         headerView.setSubviews()
@@ -72,7 +72,7 @@ class RefreshHeaderView: RefreshView {
     /// KVO监听contentOffset的变化
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == RefreshView.contentOffsetKeyPath {
-            if canRefresh == true && self.scrollerView!.isDragging == false {
+            if canRefresh == true && self.scrollView!.isDragging == false {
                 if self.refreshState == .WillRefresh {
                     //松手进入刷新状态
                     self.refreshState = .Refreshing
@@ -80,15 +80,15 @@ class RefreshHeaderView: RefreshView {
                         self.refresh!()
                     }
                     UIView.animate(withDuration: 0.5) {
-                        self.scrollerView?.contentInset.top = self.frame.size.height
+                        self.scrollView?.contentInset.top = self.frame.size.height
                     }
                 }
             }
             
-            if self.scrollerView!.isDragging == true {
+            if self.scrollView!.isDragging == true {
                 if self.refreshState != .Refreshing && self.refreshState != .Refreshed {
-                    //非刷新状态下拖拽scrollerView
-                    if self.scrollerView!.contentOffset.y <= -(self.frame.size.height  + 5) {
+                    //非刷新状态下拖拽scrollView
+                    if self.scrollView!.contentOffset.y <= -(self.frame.size.height  + 5) {
                         self.refreshState = .WillRefresh
                         self.canRefresh = true
                     }else {
@@ -99,7 +99,7 @@ class RefreshHeaderView: RefreshView {
                 
             }
         }else if keyPath == RefreshView.boundsKeyPath {
-            //scrollerView的bound发生改变
+            //scrollView的bound发生改变
             let newValue: CGRect = change?[NSKeyValueChangeKey.newKey] as? CGRect ?? .zero
             let oleValue: CGRect = change?[NSKeyValueChangeKey.oldKey] as? CGRect ?? .zero
             if newValue.size.width != oleValue.size.width {
@@ -113,12 +113,12 @@ class RefreshHeaderView: RefreshView {
         self.refreshState = .Refreshed
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             UIView.animate(withDuration: 0.5) {
-                self.scrollerView?.contentInset = .zero
+                self.scrollView?.contentInset = .zero
             } completion: { [self] (finished) in
                 self.refreshState = .Ready
-                if self.scrollerView?.refreshFootView?.refreshState == .NoMoreData {
+                if self.scrollView?.refreshFootView?.refreshState == .NoMoreData {
                     //充值没有更多数据状态
-                    self.scrollerView?.refreshFootView?.resetNoMoreData()
+                    self.scrollView?.refreshFootView?.resetNoMoreData()
                 }
 
             }
@@ -126,9 +126,9 @@ class RefreshHeaderView: RefreshView {
     }
     
     deinit {
-        if self.scrollerView != nil {
-            self.scrollerView!.removeObserver(self, forKeyPath: RefreshView.contentOffsetKeyPath, context: nil)
-            self.scrollerView!.removeObserver(self, forKeyPath: RefreshView.boundsKeyPath, context: nil)
+        if self.scrollView != nil {
+            self.scrollView!.removeObserver(self, forKeyPath: RefreshView.contentOffsetKeyPath, context: nil)
+            self.scrollView!.removeObserver(self, forKeyPath: RefreshView.boundsKeyPath, context: nil)
         }
     }
 }

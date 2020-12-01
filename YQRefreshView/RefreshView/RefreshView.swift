@@ -25,7 +25,7 @@ extension UIScrollView {
     }
     
     func refreshHeaderView(refresh: @escaping () -> Void) {
-        self.refreshHeaderView = RefreshHeaderView.headerView(refresh: refresh, scrollerView: self)
+        self.refreshHeaderView = RefreshHeaderView.headerView(refresh: refresh, scrollView: self)
         self.addSubview(self.refreshHeaderView!)
     }
         
@@ -42,7 +42,7 @@ extension UIScrollView {
     }
     
     func refreshFootView(refresh: @escaping () -> Void) {
-        self.refreshFootView = RefreshFootView.footView(refresh: refresh, scrollerView: self)
+        self.refreshFootView = RefreshFootView.footView(refresh: refresh, scrollView: self)
         self.addSubview(self.refreshFootView!)
     }
     
@@ -63,7 +63,7 @@ class RefreshView: UIView {
     static var contentSizeKeyPath = "contentSize"
     static var boundsKeyPath = "bounds"
     
-    weak var scrollerView: UIScrollView?
+    weak var scrollView: UIScrollView?
     /// 刷新回调
     var refresh: (() -> Void)? = nil
     

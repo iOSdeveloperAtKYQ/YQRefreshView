@@ -37,16 +37,16 @@ class RefreshFootView: RefreshView {
     /// 初始化footView
     /// - Parameters:
     ///   - refresh: 刷新回调
-    ///   - scrollerView: scrollerView
+    ///   - scrollView: scrollView
     /// - Returns: footView
-    class func footView(refresh: @escaping () -> Void, scrollerView: UIScrollView) -> RefreshFootView {
+    class func footView(refresh: @escaping () -> Void, scrollView: UIScrollView) -> RefreshFootView {
         let footH: CGFloat = 50
-        let footView = RefreshFootView.init(frame: .init(x: 0, y: scrollerView.frame.size.height, width: scrollerView.frame.size.width, height: footH))
-        footView.scrollerView = scrollerView
+        let footView = RefreshFootView.init(frame: .init(x: 0, y: scrollView.frame.size.height, width: scrollView.frame.size.width, height: footH))
+        footView.scrollView = scrollView
         footView.refresh = refresh
         footView.setSubviews()
         
-        scrollerView.addObserver(footView, forKeyPath: RefreshView.contentSizeKeyPath, options: .new, context: nil)
+        scrollView.addObserver(footView, forKeyPath: RefreshView.contentSizeKeyPath, options: .new, context: nil)
         
         return footView
     }
@@ -73,7 +73,7 @@ class RefreshFootView: RefreshView {
     /// KVO监听contentOffset和contentSize的变化
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == RefreshView.contentOffsetKeyPath {
-            if self.canRefresh == true && self.scrollerView!.isDragging == false {
+            if self.canRefresh == true && self.scrollView!.isDragging == false {
                 if self.refreshState == .WillRefresh {
                     //松手进入刷新状态
                     self.refreshState = .Refreshing
@@ -82,26 +82,26 @@ class RefreshFootView: RefreshView {
                     }
                     
                     var bottom: CGFloat = 0
-                    if self.scrollerView!.contentSize.height > self.scrollerView!.frame.size.height {
-                        //内容高度超出了scrollerView的高度
+                    if self.scrollView!.contentSize.height > self.scrollView!.frame.size.height {
+                        //内容高度超出了scrollView的高度
                         bottom = self.frame.size.height
                     }else {
-                        //内容高度低于scrollerView的高度
-                        bottom = self.scrollerView!.frame.size.height + self.frame.size.height - self.scrollerView!.contentSize.height
+                        //内容高度低于scrollView的高度
+                        bottom = self.scrollView!.frame.size.height + self.frame.size.height - self.scrollView!.contentSize.height
                     }
                     
                     UIView.animate(withDuration: 0.5) {
-                        self.scrollerView?.contentInset.bottom = bottom
+                        self.scrollView?.contentInset.bottom = bottom
                     }
                 }
             }
             
-            if self.scrollerView!.isDragging == true {
+            if self.scrollView!.isDragging == true {
                 if self.refreshState != .Refreshing && self.refreshState != .NoMoreData {
-                    //非刷新状态下拖拽scrollerView
-                    if self.scrollerView!.contentSize.height > self.scrollerView!.frame.size.height {
-                        //内容高度超出了scrollerView的高度
-                        if (self.scrollerView!.contentOffset.y + self.scrollerView!.frame.size.height) >= (self.scrollerView!.contentSize.height + self.frame.size.height + 5) {
+                    //非刷新状态下拖拽scrollView
+                    if self.scrollView!.contentSize.height > self.scrollView!.frame.size.height {
+                        //内容高度超出了scrollView的高度
+                        if (self.scrollView!.contentOffset.y + self.scrollView!.frame.size.height) >= (self.scrollView!.contentSize.height + self.frame.size.height + 5) {
                             self.refreshState = .WillRefresh
                             self.canRefresh = true
                         }else {
@@ -109,8 +109,8 @@ class RefreshFootView: RefreshView {
                             self.canRefresh = false
                         }
                     }else {
-                        //内容高度低于scrollerView的高度
-                        if self.scrollerView!.contentOffset.y >= self.frame.size.height + 5 {
+                        //内容高度低于scrollView的高度
+                        if self.scrollView!.contentOffset.y >= self.frame.size.height + 5 {
                             self.refreshState = .WillRefresh
                             self.canRefresh = true
                         }else {
@@ -123,13 +123,13 @@ class RefreshFootView: RefreshView {
             }
         }else if keyPath == RefreshView.contentSizeKeyPath {
             //内容高度发生改变，改变footView的y值
-            if self.scrollerView!.contentSize.height > self.scrollerView!.frame.size.height {
-                self.frame.origin.y = self.scrollerView!.contentSize.height
+            if self.scrollView!.contentSize.height > self.scrollView!.frame.size.height {
+                self.frame.origin.y = self.scrollView!.contentSize.height
             }else {
-                self.frame.origin.y = self.scrollerView!.frame.size.height
+                self.frame.origin.y = self.scrollView!.frame.size.height
             }
         }else if keyPath == RefreshView.boundsKeyPath {
-            //scrollerView的bound发生改变
+            //scrollView的bound发生改变
             let newValue: CGRect = change?[NSKeyValueChangeKey.newKey] as? CGRect ?? .zero
             let oleValue: CGRect = change?[NSKeyValueChangeKey.oldKey] as? CGRect ?? .zero
             if newValue.size.width != oleValue.size.width {
@@ -141,7 +141,7 @@ class RefreshFootView: RefreshView {
     
     /// 停止刷新
     func endRefresh() {
-        self.scrollerView?.contentInset = .zero
+        self.scrollView?.contentInset = .zero
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.refreshState = .Ready
         }
@@ -150,12 +150,12 @@ class RefreshFootView: RefreshView {
     /// 没有更多数据
     func noMoreData() {
         var bottom: CGFloat = 0
-        if self.scrollerView!.contentSize.height > self.scrollerView!.frame.size.height {
+        if self.scrollView!.contentSize.height > self.scrollView!.frame.size.height {
             bottom = self.frame.size.height
         }else {
-            bottom = self.scrollerView!.frame.size.height + self.frame.size.height - self.scrollerView!.contentSize.height
+            bottom = self.scrollView!.frame.size.height + self.frame.size.height - self.scrollView!.contentSize.height
         }
-        self.scrollerView?.contentInset.bottom = bottom
+        self.scrollView?.contentInset.bottom = bottom
         
         self.refreshState = .NoMoreData
     }
@@ -164,15 +164,15 @@ class RefreshFootView: RefreshView {
     func resetNoMoreData() {
         if self.refreshState == .NoMoreData {
             self.refreshState = .Ready
-            self.scrollerView?.contentInset = .zero
+            self.scrollView?.contentInset = .zero
         }
     }
     
     deinit {
-        if self.scrollerView != nil {
-            self.scrollerView!.removeObserver(self, forKeyPath: RefreshView.contentOffsetKeyPath, context: nil)
-            self.scrollerView!.removeObserver(self, forKeyPath: RefreshView.contentSizeKeyPath, context: nil)
-            self.scrollerView!.removeObserver(self, forKeyPath: RefreshView.boundsKeyPath, context: nil)
+        if self.scrollView != nil {
+            self.scrollView!.removeObserver(self, forKeyPath: RefreshView.contentOffsetKeyPath, context: nil)
+            self.scrollView!.removeObserver(self, forKeyPath: RefreshView.contentSizeKeyPath, context: nil)
+            self.scrollView!.removeObserver(self, forKeyPath: RefreshView.boundsKeyPath, context: nil)
         }
  
     }
