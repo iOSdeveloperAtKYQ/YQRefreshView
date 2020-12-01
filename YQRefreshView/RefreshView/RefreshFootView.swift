@@ -70,7 +70,7 @@ class RefreshFootView: RefreshView {
         self.addSubview(self.loadingView!)
     }
     
-    /// KVO监听contentOffset和contentSize的变化
+    /// KVO监听contentOffset、contentSize、bounds的变化
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == RefreshView.contentOffsetKeyPath {
             if self.canRefresh == true && self.scrollView!.isDragging == false {

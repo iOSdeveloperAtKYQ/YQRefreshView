@@ -69,7 +69,7 @@ class RefreshHeaderView: RefreshView {
         self.addSubview(self.loadingView!)
     }
     
-    /// KVO监听contentOffset的变化
+    /// KVO监听contentOffset、bounds的变化
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == RefreshView.contentOffsetKeyPath {
             if canRefresh == true && self.scrollView!.isDragging == false {
@@ -109,6 +109,7 @@ class RefreshHeaderView: RefreshView {
     }
     
     
+    /// 停止刷新，如果处于没有更多数据状态下将自动重置
     func endRefresh() {
         self.refreshState = .Refreshed
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -117,7 +118,7 @@ class RefreshHeaderView: RefreshView {
             } completion: { [self] (finished) in
                 self.refreshState = .Ready
                 if self.scrollView?.refreshFootView?.refreshState == .NoMoreData {
-                    //充值没有更多数据状态
+                    //重置没有更多数据状态
                     self.scrollView?.refreshFootView?.resetNoMoreData()
                 }
 
