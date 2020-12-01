@@ -2,7 +2,7 @@
 一句代码集成下来刷新和上拉加载更多
 
 # 效果图
-![](https://github.com/iOSdeveloperAtKYQ/YQChart/blob/master/效果图/效果图.gif)
+![](https://github.com/iOSdeveloperAtKYQ/YQRefreshView/blob/master/效果图/效果图.gif)
 # 使用方法
 下拉刷新
 ```swift
