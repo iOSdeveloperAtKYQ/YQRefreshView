@@ -55,7 +55,7 @@ class RefreshFootView: RefreshView {
     func setSubviews() {
         self.tipsLabel = UILabel.init()
         self.tipsLabel?.text = "上拉加载更多"
-        self.tipsLabel?.textColor = .lightGray
+        self.tipsLabel?.textColor = .black
         self.tipsLabel?.textAlignment = .center
         self.tipsLabel?.backgroundColor = .clear
         self.addSubview(self.tipsLabel!)
@@ -142,9 +142,7 @@ class RefreshFootView: RefreshView {
     /// 停止刷新
     func endRefresh() {
         self.scrollView?.contentInset = .zero
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.refreshState = .Ready
-        }
+        self.refreshState = .Ready
     }
     
     /// 没有更多数据

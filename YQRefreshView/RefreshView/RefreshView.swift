@@ -24,12 +24,12 @@ extension UIScrollView {
         }
     }
     
+    /// 头部刷新方法
+    /// - Parameter refresh: 刷新回调
     func refreshHeaderView(refresh: @escaping () -> Void) {
         self.refreshHeaderView = RefreshHeaderView.headerView(refresh: refresh, scrollView: self)
         self.addSubview(self.refreshHeaderView!)
     }
-        
-    
     
     /// 底部刷新控件
     var refreshFootView: RefreshFootView? {
@@ -41,6 +41,8 @@ extension UIScrollView {
         }
     }
     
+    /// 底部刷新方法
+    /// - Parameter refresh: 刷新回调
     func refreshFootView(refresh: @escaping () -> Void) {
         self.refreshFootView = RefreshFootView.footView(refresh: refresh, scrollView: self)
         self.addSubview(self.refreshFootView!)

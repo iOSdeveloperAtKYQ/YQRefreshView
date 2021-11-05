@@ -53,7 +53,7 @@ class RefreshHeaderView: RefreshView {
     func setSubviews() {
         self.tipsLabel = UILabel.init()
         self.tipsLabel?.text = "下拉刷新"
-        self.tipsLabel?.textColor = .lightGray
+        self.tipsLabel?.textColor = .black
         self.tipsLabel?.textAlignment = .center
         self.tipsLabel?.backgroundColor = .clear
         self.addSubview(self.tipsLabel!)
@@ -105,6 +105,16 @@ class RefreshHeaderView: RefreshView {
             if newValue.size.width != oleValue.size.width {
                 self.frame.size.width = newValue.size.width
             }
+        }
+    }
+    
+    /// 开始刷新
+    func beginRefresh() {
+        self.scrollView?.contentInset.top = self.frame.size.height
+        self.scrollView?.setContentOffset(.init(x: 0, y: -self.frame.height), animated: true)
+        self.refreshState = .Refreshing
+        if self.refresh != nil {
+            self.refresh!()
         }
     }
     
